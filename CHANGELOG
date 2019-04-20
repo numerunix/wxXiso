@@ -1,0 +1,12 @@
+Cambiamenti:
+
+wxXiso 0.4 - Risolto il bug che se si premeva cancel nel frame delle opzioni corrompeva i dati
+	     Aggiunti gli aggiornamenti, automatici e manuali
+
+wxXiso 0.3 - Aggiornamento a wxWidgets 3.0.
+	     Tolta la possibilità di aprire gnome-terminal per via di un bug dello stesso
+	     Aggiunta l'elaborazione di più files in contemporanea, fino ad un numero definibile.
+
+wxXiso 0.2 - Aggiunta la possibilità di personalizzare la shell grafica da aprire.
+	     Aggiunta il conteggio dei files da decomprimere.
+wxXiso 0.1 - versione iniziale.
