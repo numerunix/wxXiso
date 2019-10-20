@@ -49,17 +49,17 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 wxXisoFrame::wxXisoFrame(wxFrame *frame)
     : GUIFrame(frame)
 {
-    versione=wxT("0.4");
-    paginaWeb=wxT("http://numerone.altervista.org/blog/2013/06/wxxiso/");
+    versione="0.4.1";
+    paginaWeb="http://numerone.altervista.org/";
     fileSelezionato=false;
     dirSelezionata=false;
-    config=new wxConfig(wxT("wxXiso"));
-    config->Read(wxT("terminal"), &terminal, 1);
-    config->Read(wxT("path"), &path, wxT("./"));
-    config->Read(wxT("processi"), &numeroProcessi, 1);
-    if (!config->Read(wxT("aggiornamentiAutomatici"), &aggiornamenti))
+    config=new wxConfig("wxXiso");
+    config->Read("terminal", &terminal, 1);
+    config->Read("path", &path, "./");
+    config->Read("processi", &numeroProcessi, 1);
+    if (!config->Read("aggiornamentiAutomatici", &aggiornamenti))
         aggiornamenti=false;
-  	client.SetHeader(_T("Content-type"), _T("text/html; charset=utf-8"));
+/*  	client.SetHeader("Content-type", "text/html; charset=utf-8");
     client.SetTimeout(10);
     if (aggiornamenti) {
         wxString s;
@@ -71,15 +71,15 @@ wxXisoFrame::wxXisoFrame(wxFrame *frame)
         } catch (std::domain_error e) {
             wxMessageBox(wxString(e.what()), wxT("Errore"), wxOK|wxICON_ERROR);
         }
-    }
+    }*/
 }
 
 wxXisoFrame::~wxXisoFrame()
 {
-    config->Write(wxT("terminal"), terminal);
-    config->Write(wxT("path"), path);
-    config->Write(wxT("processi"), numeroProcessi);
-    config->Write(wxT("aggiornamentiAutomatici"), aggiornamenti);
+    config->Write("terminal", terminal);
+    config->Write("path", path);
+    config->Write("processi", numeroProcessi);
+    config->Write("aggiornamentiAutomatici", aggiornamenti);
     delete config;
 }
 
@@ -97,18 +97,18 @@ void wxXisoFrame::OnAbout(wxCommandEvent &event)
 {
     wxString msg = wxbuildinfo(long_f);
     wxAboutDialogInfo info;
-    info.SetName(_("wxXiso"));
+    info.SetName("wxXiso");
     info.SetVersion(versione);
-    info.SetDescription(_("Batch GUI per il programma extract-xiso. Permette di scompattare più iso per volta"));
-    info.SetCopyright(_T("(C) 2015 Giulio Sorrentino <gsorre84@gmail.com>"));
-    info.SetLicence(_T("GPL v3 o, a tua discrezione, qualsiasi versione successiva."));
-    info.SetWebSite(_T("http://numerone.altervista.org"));
+    info.SetDescription(wxT("Batch GUI per il programma extract-xiso. Permette di scompattare più iso per volta"));
+    info.SetCopyright(wxT("(C) 2019 Giulio Sorrentino <gsorre84@gmail.com>"));
+    info.SetLicence(wxT("GPL v3 o, a tua discrezione, qualsiasi versione successiva."));
+    info.SetWebSite("http://numerone.altervista.org");
     wxAboutBox(info);
 }
 
 
 void wxXisoFrame::OnSelezionaIso(wxCommandEvent &evt) {
-    wxDirDialog *dirDialog=new wxDirDialog(this, _("Seleziona una directory"));
+    wxDirDialog *dirDialog=new wxDirDialog(this, wxT("Seleziona una directory"));
     if (dirDialog->ShowModal()==wxID_OK) {
         m_staticText2->SetLabel(dirDialog->GetPath());
     }
@@ -117,7 +117,7 @@ void wxXisoFrame::OnSelezionaIso(wxCommandEvent &evt) {
 }
 
 void wxXisoFrame::OnSelezionaDir(wxCommandEvent &evt) {
-    wxDirDialog *dirDialog=new wxDirDialog(this, _("Seleziona una directory"));
+    wxDirDialog *dirDialog=new wxDirDialog(this, wxT("Seleziona una directory"));
     if (dirDialog->ShowModal()==wxID_OK) {
         m_staticText4->SetLabel(dirDialog->GetPath());
     }
@@ -135,27 +135,28 @@ void wxXisoFrame::OnOk(wxCommandEvent & evt) {
         wxMessageBox(wxT("Directory non aperta"), wxT("Errore"), wxICON_ERROR);
         return;
     }
-    cont=dir.GetFirst(&f, wxT("*.iso"));
+    cont=dir.GetFirst(&f, "*.iso");
     if (!cont) {
         wxMessageBox(wxT("La directory non contiene files .iso. Selezionare la directory esatta."), wxT("Attenzione"), wxICON_INFORMATION);
         return;
     }
-    if (!wxFileExists(path+wxT("extract-xiso"))) {
+    if (!wxFileExists(path+wxFileName::GetPathSeparator()+"extract-xiso")) {
         wxMessageBox(wxT("File extract-xiso non trovato. Indicare la path nelle opzioni"), wxT("Errore"), wxICON_ERROR);
         return;
     }
     while (cont) {
         d=m_staticText4->GetLabel()+wxFileName::GetPathSeparator()+f.Left(f.Len()-4);
         if (wxDirExists(d)) {
-            errore=errore+f+wxT("\n");
+            errore=errore+f+"\n";
             cont=dir.GetNext(&f);
             continue;
         }
         switch(terminal) {
-            case 0: console=wxT("xterm -e"); break;
-            case 1: console=wxT("konsole --noclose -e"); break;
+            case 0: console="xterm -hold -e"; break;
+            case 1: console="konsole --noclose -e"; break;
+            case 2: console="gnome-terminal --profile=\"non chiudere\" -e";
         }
-        as.Add(console+ wxT(" \"")+path+wxT("extract-xiso\" -x -s -d \"")+d+wxT("\" \"")+m_staticText2->GetLabel()+wxFileName::GetPathSeparator()+f+wxT("\" "));
+        as.Add(console+ " \"\\\""+path+wxFileName::GetPathSeparator()+wxT("extract-xiso\\\" -x -s -d \\\"")+d+"\\\" \\\""+m_staticText2->GetLabel()+wxFileName::GetPathSeparator()+f+"\\\"\" ");
         cont=dir.GetNext(&f);
     }
     wxString a;
@@ -163,9 +164,10 @@ void wxXisoFrame::OnOk(wxCommandEvent & evt) {
         wxMessageBox(wxT("Ignoro i file ")+errore+wxT("perché le relative cartelle esistono già."), wxT("Attenzione"), wxICON_ASTERISK);
     for (i=0; i<as.GetCount(); i++) {
         SetStatusText(wxT("Estrazione dell'iso ")
-                          +wxString::Format(wxT("%zd"),i+1)
+                          +wxString::Format("%zd",i+1)
                           +wxT(" di ")
-                          +wxString::Format(wxT("%zd"),as.GetCount()));
+                          +wxString::Format("%zd",as.GetCount()));
+     //   wxMessageBox(as.Item(i));
         wxExecute(as.Item(i), wxEXEC_ASYNC);
         if (((i+1) % numeroProcessi==0 || numeroProcessi==1) && i<as.GetCount()-1)
             wxMessageBox(wxT("Messaggio di blocco, premere ok per continuare."), wxT("Informazione"), wxICON_INFORMATION);
@@ -184,7 +186,7 @@ void wxXisoFrame::OnOpzioni( wxCommandEvent& event ) {
     }
 }
 
-bool wxXisoFrame::Aggiornamenti(wxString &nuovaVersione) throw (std::domain_error) {
+/*bool wxXisoFrame::Aggiornamenti(wxString &nuovaVersione) throw (std::domain_error) {
     bool aggiornamenti=false;
     if (client.Connect(wxT("numerone.altervista.org"))) {
         if (client.GetError() == wxPROTO_NOERR)
@@ -202,7 +204,7 @@ bool wxXisoFrame::Aggiornamenti(wxString &nuovaVersione) throw (std::domain_erro
         }
         client.Close();
     } else {
-        wxMessageBox(_("Impossibile connettersi. Riprovare piu' tardi."), _("Errore"), wxICON_ERROR);
+        wxMessageBox(wxT"Impossibile connettersi. Riprovare piu' tardi."), wxT"Errore"), wxICON_ERROR);
     }
     return aggiornamenti;
 }
@@ -217,8 +219,8 @@ void wxXisoFrame::onAggiornamenti(wxCommandEvent& evt) {
     } catch (std::domain_error e) {
         wxMessageBox(wxString(e.what()), wxT("Errore"), wxOK|wxICON_ERROR);
     }
-}
+}*/
 
 void wxXisoFrame::onSitoWeb(wxCommandEvent &evt) {
-    wxLaunchDefaultBrowser(wxT("http://numerone.altervista.org"));
+    wxLaunchDefaultBrowser("http://numerone.altervista.org");
 }

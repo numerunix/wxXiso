@@ -26,11 +26,11 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	mbar = new wxMenuBar( 0 );
 	fileMenu = new wxMenu();
 	wxMenuItem* m_menuItem3;
-	m_menuItem3 = new wxMenuItem( fileMenu, wxID_ANY, wxString( wxT("Opzioni") ) + wxT('\t') + wxT("ALT + O\n"), wxEmptyString, wxITEM_NORMAL );
+	m_menuItem3 = new wxMenuItem( fileMenu, wxID_ANY, wxString( wxT("Opzioni") ) + "\tALT + O\n", wxT("Mostra le opzioni dell'applicazione"), wxITEM_NORMAL );
 	fileMenu->Append( m_menuItem3 );
 
 	wxMenuItem* menuFileQuit;
-	menuFileQuit = new wxMenuItem( fileMenu, idMenuQuit, wxString( wxT("&Esci") ) + wxT('\t') + wxT("Alt+F4"), wxT("Quit the application"), wxITEM_NORMAL );
+	menuFileQuit = new wxMenuItem( fileMenu, idMenuQuit, wxString( wxT("&Esci") ) + "\tAlt+F4", wxT("Esci dall'applicazione"), wxITEM_NORMAL );
 	fileMenu->Append( menuFileQuit );
 
 	mbar->Append( fileMenu, wxT("&File") );
@@ -38,16 +38,16 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	helpMenu = new wxMenu();
 
 	wxMenuItem* menuHelpSitoWeb;
-	menuHelpSitoWeb = new wxMenuItem(helpMenu, idMenuSitoWeb, wxT("Sito web ufficiale\tF3"), wxT("Apre il browser col sito web"), wxITEM_NORMAL);
+	menuHelpSitoWeb = new wxMenuItem(helpMenu, idMenuSitoWeb, wxString(wxT("Sito web ufficiale"))+"\tAlt+F3", wxT("Apre il browser col sito web"), wxITEM_NORMAL);
 	helpMenu->Append(menuHelpSitoWeb);
 
-	wxMenuItem* menuHelpAggiornamenti;
-	menuHelpAggiornamenti = new wxMenuItem(helpMenu, idMenuAggiornamenti, wxT("Verifica aggiornamenti\tF2"), wxT("Ricerca aggiornamenti"), wxITEM_NORMAL);
-    helpMenu->Append(menuHelpAggiornamenti);
+/*	wxMenuItem* menuHelpAggiornamenti;
+	menuHelpAggiornamenti = new wxMenuItem(helpMenu, idMenuAggiornamenti, wxString(wxT("Verifica aggiornamenti"))+"\tAlt+F2"", wxT("Ricerca aggiornamenti"), wxITEM_NORMAL);
+    helpMenu->Append(menuHelpAggiornamenti);*/
 
 
 	wxMenuItem* menuHelpAbout;
-	menuHelpAbout = new wxMenuItem( helpMenu, idMenuAbout, wxString( wxT("&Informazioni") ) + wxT('\t') + wxT("F1"), wxT("Show info about this application"), wxITEM_NORMAL );
+	menuHelpAbout = new wxMenuItem( helpMenu, idMenuAbout, wxString( wxT("&Informazioni") ) + "\tAlt+F1", wxT("Mostra le informazioni relative l'applicazione"), wxITEM_NORMAL );
 	helpMenu->Append( menuHelpAbout );
 
 
@@ -128,7 +128,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	this->Connect( m_menuItem3->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnOpzioni ) );
 	this->Connect( menuFileQuit->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnQuit ) );
 	this->Connect( menuHelpAbout->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnAbout ) );
-	this->Connect(menuHelpAggiornamenti->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUIFrame::onAggiornamenti));
+//	this->Connect(menuHelpAggiornamenti->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUIFrame::onAggiornamenti));
 	this->Connect(menuHelpSitoWeb->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUIFrame::onSitoWeb));
 	m_button1->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnSelezionaIso ), NULL, this );
 	m_button2->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnSelezionaDir ), NULL, this );
@@ -143,7 +143,7 @@ GUIFrame::~GUIFrame()
 	this->Disconnect( wxID_ANY, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnOpzioni ) );
 	this->Disconnect( idMenuQuit, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnQuit ) );
 	this->Disconnect( idMenuAbout, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnAbout ) );
-	this->Disconnect(idMenuAggiornamenti, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUIFrame::onAggiornamenti));
+//	this->Disconnect(idMenuAggiornamenti, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUIFrame::onAggiornamenti));
 	m_button1->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnSelezionaIso ), NULL, this );
 	m_button2->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnSelezionaDir ), NULL, this );
 	m_button3->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnOk ), NULL, this );
@@ -165,7 +165,7 @@ MyDialog1::MyDialog1( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_staticText5->Wrap( -1 );
 	bSizer8->Add( m_staticText5, 0, wxALL, 5 );
 
-	wxString m_choice1Choices[] = { wxT("xTerm"), wxT("Konsole") };
+	wxString m_choice1Choices[] = { "xTerm", "Konsole", "gnome-terminal" };
 	int m_choice1NChoices = sizeof( m_choice1Choices ) / sizeof( wxString );
 	m_choice1 = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choice1NChoices, m_choice1Choices, 0 );
 	m_choice1->SetSelection( 0 );
@@ -209,7 +209,7 @@ MyDialog1::MyDialog1( wxWindow* parent, wxWindowID id, const wxString& title, co
 
 	m_checkBox1 = new wxCheckBox( this, wxID_ANY, wxT("Controlla aggiornamenti all'avvio"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer12->Add( m_checkBox1, 0, wxALL, 5 );
-
+    m_checkBox1->Enable(false);
 
 	bSizer7->Add( bSizer12, 1, wxEXPAND, 5 );
 
@@ -219,7 +219,7 @@ MyDialog1::MyDialog1( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_button6 = new wxButton( this, wxID_OK, wxT("OK"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer14->Add( m_button6, 0, wxALL, 5 );
 
-	m_button7 = new wxButton( this, wxID_CANCEL, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_button7 = new wxButton( this, wxID_CANCEL, wxT("Annulla"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer14->Add( m_button7, 0, wxALL, 5 );
 
 

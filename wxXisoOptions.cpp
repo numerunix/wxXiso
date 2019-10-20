@@ -18,7 +18,7 @@ wxXisoOptions::~wxXisoOptions()
 }
 
 void wxXisoOptions::OnSelect( wxCommandEvent& event ) {
-   wxDirDialog *dirDialog=new wxDirDialog(this, _("Seleziona una directory"));
+   wxDirDialog *dirDialog=new wxDirDialog(this, wxT("Seleziona una directory"));
     if (dirDialog->ShowModal()==wxID_OK) {
         m_textCtrl1->SetValue(dirDialog->GetPath());
         m_textCtrl3->SetValue(numeroProcessiStr);
@@ -36,6 +36,7 @@ wxString wxXisoOptions::GetPath() {
 void wxXisoOptions::OnOK( wxCommandEvent& event ) {
     terminal=m_choice1->GetSelection();
     aggiornamenti=m_checkBox1->GetValue();
+    path=m_textCtrl1->GetValue();
     numeroProcessiStr=m_textCtrl3->GetValue();
     if (!numeroProcessiStr.ToLong(&numeroProcessi))
         wxMessageBox(wxT("Il valore inserito come numero di processi non è un numero intero."), wxT("Errore"), wxICON_ERROR);

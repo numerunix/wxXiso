@@ -48,9 +48,9 @@ class wxXisoFrame: public GUIFrame
         virtual void OnSelezionaIso(wxCommandEvent &evt);
         virtual void OnSelezionaDir(wxCommandEvent &evt);
         virtual void OnOk(wxCommandEvent & evt);
-        virtual void onAggiornamenti(wxCommandEvent& evt);
+ //       virtual void onAggiornamenti(wxCommandEvent& evt);
         virtual void onSitoWeb(wxCommandEvent& evt);
-        bool Aggiornamenti(wxString &nuovaVersione) throw (std::domain_error);
+      //  bool Aggiornamenti(wxString &nuovaVersione) throw (std::domain_error);
 };
 
 #endif // WXXISOMAIN_H
